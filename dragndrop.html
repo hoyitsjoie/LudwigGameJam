@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      canvas {
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas" width="500" height="300"></canvas>
+    <script>
+      var canvas = document.getElementById("canvas");
+      var ctx = canvas.getContext("2d");
+
+      // Load the images
+      var images = [];
+      images[0] = new Image();
+      images[0].onload = function() {
+        ctx.drawImage(images[0], 50, 50);
+      };
+      images[0].src = "blue_star.png";
+      images[1] = new Image();
+      images[1].onload = function() {
+        ctx.drawImage(images[1], 0, 0);
+      };
+      images[1].src = "red_star.png";
+
+      var imagePositions = [];
+      imagePositions[0] = { x: 50, y: 50 };
+      imagePositions[1] = { x: 150, y: 150 };
+
+      var dragIndex = -1;
+      var imageStartX;
+      var imageStartY;
+      var mouseStartX;
+      var mouseStartY;
+
+      // Handle the mousedown event
+      canvas.addEventListener("mousedown", function(event) {
+        var x = event.clientX - canvas.offsetLeft;
+        var y = event.clientY - canvas.offsetTop;
+        for (var i = 0; i < images.length; i++) {
+          if (x >= imagePositions[i].x && x <= imagePositions[i].x + images[i].width && y >= imagePositions[i].y && y <= imagePositions[i].y + images[i].height) {
+            dragIndex = i;
+            imageStartX = imagePositions[i].x;
+            imageStartY = imagePositions[i].y;
+            mouseStartX = x;
+            mouseStartY = y;
+            break;
+          }
+        }
+      });
+
+      // Handle the mousemove event
+      canvas.addEventListener("mousemove", function(event) {
+        if (dragIndex >= 0) {
+          var x = event.clientX - canvas.offsetLeft;
+          var y = event.clientY - canvas.offsetTop;
+          imagePositions[dragIndex].x = imageStartX + x - mouseStartX;
+          imagePositions[dragIndex].y = imageStartY + y - mouseStartY;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          for (var i = 0; i < images.length; i++) {
+            ctx.drawImage(images[i], imagePositions[i].x, imagePositions[i].y);
+          }
+        }
+      });
+
+      // Handle the mouseup event
+      canvas.addEventListener("mouseup", function() {
+        dragIndex = -1;
+      });
+    </script>
+  </body>
+</html>

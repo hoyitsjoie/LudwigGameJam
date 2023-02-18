@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      canvas {
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas" width="500" height="300"></canvas>
+    <script>
+      var canvas = document.getElementById("canvas");
+      var ctx = canvas.getContext("2d");
+
+      // Load the image
+      ctx.fillStyle = "#abdbe3";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      var image = new Image();
+      image.src = "blue_star.png";
+      image.onload = function() {
+        var imageX = 50;
+        var imageY = 50;
+        ctx.drawImage(image, imageX, imageY);
+
+        // Detect clicks on the image
+        canvas.addEventListener("mousemove", function(event) {
+          var x = event.clientX - canvas.offsetLeft;
+          var y = event.clientY - canvas.offsetTop;
+          if (x >= imageX && x <= imageX + image.width && y >= imageY && y <= imageY + image.height) {
+
+            image.src = "red_star.png";
+            image.onload = function() {
+            ctx.drawImage(image, imageX, imageY);}
+            }
+          else {
+
+            image.src = "blue_star.png";
+            image.onload = function() {
+            ctx.drawImage(image, imageX, imageY);
+            }
+          }
+
+        });
+      };
+
+      
+    </script>
+  </body>
+</html>
+
+
