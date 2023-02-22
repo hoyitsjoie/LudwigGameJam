@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" onclick="jump()">
+<!-- Joy Zou -->
+<!-- Visual novel game from this tutorial: https://www.youtube.com/watch?v=jhLpktFuaM8 1/15/2023 -->
+<head> 
+	<meta charset="utf-8" /> 
+	<title>VN Game</title>
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+	<h1> Visual Novel Engine </h1>
+
+	<div class="vnContainer">
+		<canvas id="VNScreen" class="vnScreen" width="800" height="600" style="border:1px solid #000000">
+		</canvas>
+	</div>
+
+	<script>
+		//our variables
+		var leonImage;
+		var roomImage;
+
+		var TEXTAREA_HEIGHT = 150;
+		var MARGIN_BOTTOM = 10;
+		var MARGIN_SIDES = 10;
+
+		var sampleText = "I wake up one morning";
+
+		//draw the canvas
+		function draw(){
+			let canvas = document.getElementById('VNScreen');
+			drawImages(canvas);
+			drawTextArea(canvas, sampleText);
+		}
+
+		//draw the images
+		function drawImages(canvas){
+			//get the context
+			let ctx = canvas.getContext("2d");
+
+			//call canvas function
+			//draw the room first because its the background
+			//draw the character next because its the midground
+			ctx.drawImage(roomImage, 0, 0);
+			ctx.drawImage(leonImage, 220, 3);
+		}
+
+		function drawTextArea(canvas, sampleText){
+			drawTextAreaBackground(canvas);
+			drawText(canvas, sampleText);
+		}
+
+		function drawTextAreaBackground(canvas){
+			let textArea_width = canvas.width - (MARGIN_SIDES*2);
+			let textArea_x = MARGIN_SIDES;
+			let textArea_y = canvas.height - (TEXTAREA_HEIGHT + MARGIN_BOTTOM);
+
+			let ctx = canvas.getContext('2d');
+			ctx.fillStyle = '#f4e9f5';
+			ctx.fillRect(textArea_x, textArea_y, textArea_width, TEXTAREA_HEIGHT);
+
+			//border
+			ctx.beginPath();
+			ctx.lineWidth = "5";
+			ctx.strokeStyle = "black";
+			ctx.strokeRect(textArea_x, textArea_y, textArea_width, TEXTAREA_HEIGHT);
+		}
+
+		function drawText(canvas, text){
+			let ctx = canvas.getContext("2d");
+			ctx.font = "30px verdana";
+			ctx.fillStyle = "black";
+
+			//measuring the height of the text and adding that to the y-axis
+			let textLineHeight = ctx.measureText(text).fontBoundingBoxAscent;
+			
+			ctx.fillText(
+				text,
+				MARGIN_SIDES + 10, //x
+				canvas.height - MARGIN_BOTTOM - TEXTAREA_HEIGHT + textLineHeight //y
+			);
+
+		}
+		//@note
+		//you can't draw an image until its loaded
+		//in order to know when its loaded, you need a callback function
+		//a callback function (big in JS/web based stuff) aka when something is done, it calls the function back
+		//so I guess on the web stuff is multithreaded? versus other programming
+		//languages stuff is on one thread, but that doesnt make sense
+		//cause we want to produce multiple different image a-synchronously
+
+		//@note
+		//Y-coordinate is flipped when drawing stuff
+
+
+		//garauntee makes sure our stuff gets loaded lol
+		function load(){
+			leonImage = new Image();
+			roomImage = new Image();
+
+			leonImage.src = 'images/nara_default.png';
+			roomImage.src = 'images/background.png';
+
+			leonImage.addEventListener('load', e1 => {
+				roomImage.addEventListener('load', e2 => {
+					draw();
+				});
+			});
+		}
+
+		//main?
+		load();
+
+	</script>
+</body>
+</html>
