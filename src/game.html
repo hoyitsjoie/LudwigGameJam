@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      canvas {
+        border: 1px solid black;
+      }
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        padding: 8px;
+        height: calc(100vh - 16px);
+        margin: 0;
+      }
+      #frames-counter {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        margin: 0;
+        font-family: 'Courier New', Courier, monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <h3>Coots is going live!</h4>
+    <canvas id="canvas" width="1024" height="768"></canvas>
+    <h4 id="frames-counter">0</h4>
+    <script src="./js/entryPoint.js" type="module"></script>
+  </body>
+</html>
