@@ -96,6 +96,23 @@ const generateScene1 = () => {
   addClickable(e.id, toggle);
 
   addDraggable(e.id);
+
+  const newButton = addButton(
+    layerId,
+    '../assets/background.png',
+    () => {
+      const transform = getComponent(newButton.id, componentTypes.TRANSFORM);
+      const size = vec2(canvas.width, canvas.height);
+      // const position = vec2(canvas.width - size.x - 16, 16);
+      updateComponent({
+        id: transform.id,
+        size: size,
+        // position: position,
+      });
+    },
+    () => console.log('hi'),
+  );
+
   return sceneId;
 };
 
