@@ -1,1 +1,1 @@
-export const getImageSource = (path) => `../assets/${path}`;
+export const getImageSource = (path) => `./assets/${path}`;
