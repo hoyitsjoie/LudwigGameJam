@@ -1,9 +1,4 @@
-import { entities } from '../components/entity.js';
-import {
-  components,
-  componentTypes,
-  getComponent,
-} from '../components/component.js';
+import { components } from '../components/component.js';
 import { canvas, ctx } from '../context.js';
 import { activeSceneId, scenes } from './scene.js';
 import { layers } from './layer.js';
@@ -17,33 +12,18 @@ export const render = () => {
   const activeScene = scenes[activeSceneId];
 
   // loop through scene's layers
-  for (let i = 0; i < activeScene.layerIds.length; i++) {
-    const layerId = activeScene.layerIds[i];
+  for (const layerId of activeScene.layerIds) {
     // render the layer
     renderLayer(layerId);
   }
-
-  // // loop through all components
-  // for (let i = 0; i < Object.values(components).length; i++) {
-  //   const component = Object.values(components)[i];
-  //   // check if component is an enabled image
-  //   const { type, enabled } = component;
-  //   if (type == componentTypes.IMAGE && enabled) {
-  //     // draw image
-  //     drawImage(component);
-  //   }
-  // }
 };
 
 const renderLayer = (layerId) => {
   // get layer
   const layer = layers[layerId];
 
-  // console.log(layer);
-
   // loop through layer's entities
-  for (let i = 0; i < layer.entityIds.length; i++) {
-    const entityId = layer.entityIds[i];
+  for (const entityId of layer.entityIds) {
     // render entity
     renderEntity(entityId);
   }
@@ -55,28 +35,11 @@ const renderEntity = (entityId) => {
     (component) => component.entityId == entityId,
   );
   // loop through entity's components
-  for (let i = 0; i < Object.values(entityComponents).length; i++) {
-    const component = Object.values(entityComponents)[i];
-    // check if component is an enabled image
-    const { type, enabled } = component;
-    if (type == componentTypes.IMAGE && enabled) {
-      // render image
-      renderImage(component);
+  for (const component of Object.values(entityComponents)) {
+    // check if component is enabled and renderable
+    const { render, enabled } = component;
+    if (render && enabled) {
+      render();
     }
-  }
-};
-
-// draw an image from an IMAGE component
-const renderImage = (component) => {
-  const { image, loaded, entityId } = component;
-
-  // get the component's transform
-  const { position, size } = getComponent(entityId, componentTypes.TRANSFORM);
-
-  // console.log(entityId, position, size);
-
-  // draw image at transform's position
-  if (loaded) {
-    ctx.drawImage(image, position.x, position.y, size.x, size.y);
   }
 };

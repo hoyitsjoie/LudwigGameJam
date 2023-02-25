@@ -56,8 +56,7 @@ export const removeEntity = (entityId) => {
 
 export const entityIsActive = (entityId) => {
   const activeScene = scenes[activeSceneId];
-  for (let i = 0; i < activeScene.layerIds.length; i++) {
-    const layerId = activeScene.layerIds[i];
+  for (const layerId of activeScene.layerIds) {
     if (layerContainsEntity(layerId, entityId)) return true;
   }
   return false;

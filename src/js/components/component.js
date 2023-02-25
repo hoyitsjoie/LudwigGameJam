@@ -11,6 +11,8 @@ export const newComponent = (entityId, type, extraFields = {}) => ({
   type: type,
   enabled: true,
   init: () => {},
+  initialized: false,
+  update: () => {},
   ...extraFields,
 });
 
@@ -76,6 +78,13 @@ export const getComponents = (entityId, type) => {
 export const componentTypes = {
   TRANSFORM: 'Transform',
   IMAGE: 'Image',
-  DRAG_DROP: 'Drag/Drop',
+  RECT: 'Rect',
+  DRAGGABLE: 'Draggable',
   HOVER: 'Hover',
+  FIT_CANVAS: 'Fit-Canvas',
+  TEXT: 'Text',
+  IMAGE_WITH_CAPTION: 'Image-With-Caption',
+  DIALOGUE_WITH_IMAGE: 'Dialogue-With-Image',
+  STATS: 'Stats',
+  HOTKEY: 'Hotkey',
 };
