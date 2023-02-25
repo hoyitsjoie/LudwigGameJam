@@ -6,7 +6,7 @@ import {
   newComponent,
   updateComponent,
 } from './component.js';
-import vec2 from '../vec2.js';
+import { vec2 } from '../vector.js';
 import { entityIsActive } from './entity.js';
 
 export const addDraggable = (
@@ -14,7 +14,7 @@ export const addDraggable = (
   dragStart = () => {},
   dragStop = () => {},
 ) => {
-  const draggable = newComponent(entityId, componentTypes.DRAG_DROP);
+  const draggable = newComponent(entityId, componentTypes.DRAGGABLE);
 
   draggable.init = () => {
     let dragging = false;

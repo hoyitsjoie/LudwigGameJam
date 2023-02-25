@@ -4,14 +4,19 @@ export let activeSceneId = null;
 
 // global scene increment
 let sceneInc = 0;
-const newScene = () => ({
+const newScene = (name = `Scene_${sceneInc}`) => ({
   id: `Scene_${sceneInc++}`,
+  name: name,
   layerIds: [],
 });
 
+export const getSceneByName = (name) => {
+  return Object.values(scenes).find((scene) => scene.name == name);
+};
+
 // create a new scene and add it to the map
-export const createScene = () => {
-  const scene = addScene(newScene());
+export const createScene = (name) => {
+  const scene = addScene(newScene(name));
   setActiveScene(scene.id);
   return scene;
 };
@@ -47,6 +52,11 @@ export const updateScene = (scene) => {
 
 export const setActiveScene = (sceneId) => {
   activeSceneId = sceneId;
+};
+
+export const setActiveSceneByName = (sceneName) => {
+  const scene = getSceneByName(sceneName);
+  activeSceneId = scene.id;
 };
 
 export const addLayerAppend = (layerId) => {

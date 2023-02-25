@@ -1,5 +1,5 @@
 import { canvas } from '../context.js';
-import vec2 from '../vec2.js';
+import { vec2 } from '../vector.js';
 import {
   addComponent,
   componentTypes,

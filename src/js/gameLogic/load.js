@@ -2,12 +2,12 @@ import {
   addLayerAppend,
   createScene,
   setActiveScene,
+  setActiveSceneByName,
 } from '../rendering/scene.js';
 import { createLayer } from '../rendering/layer.js';
-import { createEntity, updateEntity } from '../components/entity.js';
+import { createEntity } from '../components/entity.js';
 import { addImage } from '../components/image.js';
 import {
-  components,
   componentTypes,
   disableComponentId,
   enableComponentId,
@@ -17,11 +17,95 @@ import {
 import { addClickable } from '../components/clickable.js';
 import { addDraggable } from '../components/draggable.js';
 import { addHoverable } from '../components/hoverable.js';
-import vec2 from '../vec2.js';
+import { vec2 } from '../vector.js';
 import { canvas } from '../context.js';
+import { addHotkey } from '../components/hotkey.js';
+import { toggleGameRunning } from '../entryPoint.js';
+import { addBackgroundImage } from '../components/backgroundImage.js';
+import { addText } from '../components/text.js';
+import { addImageWithCaption } from '../components/imageWithCaption.js';
+import { initializeScenes } from './sceneNavigation.js';
 
 export default () => {
-  const sceneIds = generateScenes();
+  initializeScenes();
+
+  // temp to test directly faster
+  // setActiveSceneByName('cootsRoom');
+
+  // const sceneIds = generateScenes();
+  // addNextLayer(sceneIds);
+  // addPauseLayer(sceneIds);
+};
+
+const generateScenes = () => {
+  return [generateScene1(), generateScene2(), generateScene3()];
+};
+
+const generateScene1 = () => {
+  const { id: sceneId } = createScene();
+  const { id: layerId } = createLayer();
+  addLayerAppend(layerId);
+
+  const backgroundEntity = createEntity(layerId);
+  addBackgroundImage(backgroundEntity.id, '../assets/background.png');
+
+  const starEntity = createEntity(layerId);
+
+  const redStar = addImage(starEntity.id, '../assets/red_star.png');
+  const blueStar = addImage(starEntity.id, '../assets/blue_star.png');
+
+  let isBlue = false;
+  const toggle = () => {
+    enableComponentId(isBlue ? redStar.id : blueStar.id);
+    disableComponentId(isBlue ? blueStar.id : redStar.id);
+    isBlue = !isBlue;
+  };
+  disableComponentId(blueStar.id);
+  addClickable(starEntity.id, toggle);
+
+  addDraggable(starEntity.id);
+
+  return sceneId;
+};
+
+const generateScene2 = () => {
+  const { id: sceneId } = createScene();
+  const { id: layerId } = createLayer();
+  addLayerAppend(layerId);
+
+  const e = createEntity(layerId);
+
+  const redStar = addImage(e.id, '../assets/red_star.png');
+  const blueStar = addImage(e.id, '../assets/blue_star.png');
+
+  const hover = () => {
+    disableComponentId(redStar.id);
+    enableComponentId(blueStar.id);
+  };
+  const unhover = () => {
+    enableComponentId(redStar.id);
+    disableComponentId(blueStar.id);
+  };
+  disableComponentId(blueStar.id);
+  addHoverable(e.id, hover, unhover);
+
+  addDraggable(e.id);
+
+  return sceneId;
+};
+
+const generateScene3 = () => {
+  const { id: sceneId } = createScene();
+  const { id: layerId } = createLayer();
+  addLayerAppend(layerId);
+
+  const starEntity = createEntity(layerId);
+  addImageWithCaption(starEntity.id, '../assets/blue_star.png', 'a blue star!');
+
+  return sceneId;
+};
+
+const addNextLayer = (sceneIds) => {
   let currentSceneIndex = 0;
 
   // create a layer for next button
@@ -58,7 +142,6 @@ export default () => {
       size: size,
       position: position,
     });
-    console.log(components[transform.id]);
   };
 
   const nextButton = addButton(
@@ -69,81 +152,37 @@ export default () => {
   );
 };
 
-const generateScenes = () => {
-  const scene1 = generateScene1();
-  const scene2 = generateScene2();
-
-  return [scene1, scene2];
-};
-
-const generateScene1 = () => {
-  const { id: sceneId } = createScene();
+const addPauseLayer = (sceneIds) => {
+  // create a layer for next button
   const { id: layerId } = createLayer();
-  addLayerAppend(layerId);
+  // loop through all scenes
+  for (const sceneId of sceneIds) {
+    // add layer to scene
+    setActiveScene(sceneId);
+    addLayerAppend(layerId);
+  }
 
-  const e = createEntity(layerId);
+  // set the first scene as active
+  setActiveScene(sceneIds[0]);
 
-  const redStar = addImage(e.id, '../assets/red_star.png');
-  const blueStar = addImage(e.id, '../assets/blue_star.png');
-
-  let isBlue = false;
-  const toggle = () => {
-    enableComponentId(isBlue ? redStar.id : blueStar.id);
-    disableComponentId(isBlue ? blueStar.id : redStar.id);
-    isBlue = !isBlue;
-  };
-  disableComponentId(blueStar.id);
-  addClickable(e.id, toggle);
-
-  addDraggable(e.id);
-
-  const newButton = addButton(
-    layerId,
-    '../assets/background.png',
-    () => {
-      const transform = getComponent(newButton.id, componentTypes.TRANSFORM);
-      const size = vec2(canvas.width, canvas.height);
-      // const position = vec2(canvas.width - size.x - 16, 16);
-      updateComponent({
-        id: transform.id,
-        size: size,
-        // position: position,
-      });
-    },
-    () => console.log('hi'),
-  );
-
-  return sceneId;
-};
-
-const generateScene2 = () => {
-  const { id: sceneId } = createScene();
-  const { id: layerId } = createLayer();
-  addLayerAppend(layerId);
-
-  const e = createEntity(layerId);
-
-  const redStar = addImage(e.id, '../assets/red_star.png');
-  const blueStar = addImage(e.id, '../assets/blue_star.png');
-
-  const hover = () => {
-    disableComponentId(redStar.id);
-    enableComponentId(blueStar.id);
-  };
-  const unhover = () => {
-    enableComponentId(redStar.id);
-    disableComponentId(blueStar.id);
-  };
-  disableComponentId(blueStar.id);
-  addHoverable(e.id, hover, unhover);
-
-  addDraggable(e.id);
-  return sceneId;
+  const entity = createEntity(layerId);
+  addHotkey(entity.id, {
+    Escape: toggleGameRunning,
+  });
 };
 
 const addButton = (layerId, src, onLoad, onClick) => {
   const e = createEntity(layerId);
-  const image = addImage(e.id, src, onLoad);
-  const clickable = addClickable(e.id, onClick);
+  addImage(e.id, src, onLoad);
+  addClickable(e.id, onClick);
+  addHoverable(
+    e.id,
+    () => setCursor('pointer'),
+    () => setCursor('default'),
+  );
   return e;
+};
+
+const setCursor = (type) => {
+  canvas.style.cursor = type;
 };

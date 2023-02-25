@@ -1,5 +1,5 @@
 import { canvas } from '../context.js';
-import vec2 from '../vec2.js';
+import { vec2 } from '../vector.js';
 import {
   addComponent,
   componentTypes,
@@ -49,6 +49,7 @@ export const addClickable = (entityId, click) => {
       if (!entityIsActive(entityId)) return;
       if (clicking) {
         click();
+        clicking = false;
       }
     });
   };

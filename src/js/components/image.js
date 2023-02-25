@@ -1,37 +1,57 @@
-import { entities } from './entity.js';
-import vec2 from '../vec2.js';
+import { vec2 } from '../vector.js';
 import {
   addComponent,
+  components,
   componentTypes,
   getComponent,
   newComponent,
   updateComponent,
 } from './component.js';
+import { ctx } from '../context.js';
 
-export const addImage = (entityId, src, onLoad = () => {}) => {
+export const addImage = (
+  entityId,
+  src,
+  onLoad = () => {},
+  updateTransform = true,
+) => {
   const image = new Image();
 
-  const imageComponent = newComponent(entityId, componentTypes.IMAGE, {
+  const component = newComponent(entityId, componentTypes.IMAGE, {
     image: image,
     loaded: false,
   });
 
-  imageComponent.init = () => {
+  component.init = () => {
     image.onload = () => {
       updateComponent({
-        id: imageComponent.id,
+        id: component.id,
         loaded: true,
       });
-      const transform = getComponent(entityId, componentTypes.TRANSFORM);
-      updateComponent({
-        id: transform.id,
-        size: vec2(image.width, image.height),
-      });
+      if (updateTransform) {
+        const transform = getComponent(entityId, componentTypes.TRANSFORM);
+        updateComponent({
+          id: transform.id,
+          size: vec2(image.width, image.height),
+        });
+      }
 
       onLoad();
     };
     image.src = src;
   };
 
-  return addComponent(imageComponent);
+  component.render = () => {
+    const { image, loaded, entityId } = components[component.id];
+
+    // get the component's transform
+    const { position, size } = getComponent(entityId, componentTypes.TRANSFORM);
+
+    // draw image at transform's position
+    if (loaded) {
+      ctx.drawImage(image, position.x, position.y, size.x, size.y);
+    }
+  };
+
+  return addComponent(component);
 };

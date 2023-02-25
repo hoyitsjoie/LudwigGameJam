@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <title>Coots is going live!</title>
+    <link rel="icon" href="../assets/miniCoots.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Grandstander:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
     <style>
       canvas {
         border: 1px solid black;
@@ -13,6 +21,9 @@
         padding: 8px;
         height: calc(100vh - 16px);
         margin: 0;
+        background: #e4d8c3;
+        /* background-image: url('../assets/blue_star.png');
+        background-repeat: repeat; */
       }
       #frames-counter {
         position: absolute;
@@ -21,11 +32,16 @@
         margin: 0;
         font-family: 'Courier New', Courier, monospace;
       }
+      h1 {
+        font-family: Grandstander, cursive;
+        font-weight: 100;
+        /* background: #DDEEFFC0 */
+      }
     </style>
   </head>
   <body>
-    <h3>Coots is going live!</h4>
-    <canvas id="canvas" width="1024" height="768"></canvas>
+    <h1></h1>
+    <canvas id="canvas" width="700" height="400"></canvas>
     <h4 id="frames-counter">0</h4>
     <script src="./js/entryPoint.js" type="module"></script>
   </body>
