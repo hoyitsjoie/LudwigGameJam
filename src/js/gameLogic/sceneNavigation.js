@@ -380,5 +380,56 @@ const createCootsStream = () => {
     getImageSource('cootsStream/streamBackground.png'),
   );
 
-  addClickable(backgroundEntityId, () => setActiveSceneByName('cootsRoom'));
+  //addClickable(backgroundEntityId, () => setActiveSceneByName('cootsRoom'));
+
+  const { id: toStreamEntityId } = createEntity(layerId);
+  addImage(
+    toStreamEntityId,
+    getImageSource('cootsRoom/toStream.png'),
+    () => {},
+    false,
+  );
+
+  addClickable(toStreamEntityId, () => setActiveSceneByName('cootsRoom'));
+  const transform = getComponent(toStreamEntityId, componentTypes.TRANSFORM);
+  const size = vec2(103 * 0.5, 124 * 0.5);
+  const position = vec2(canvas.width - 180, canvas.height - 90);
+  updateComponent({
+    id: transform.id,
+    size,
+    position,
+  });
+
+  //add stream button
+  addStreamButton(layerId);
+
+};
+
+const addStreamButton = (layerId) => {
+  const { id: sleepLayerId } = createLayer();
+  const { id: sleepLayerEntityId } = createEntity(sleepLayerId);
+  addImage(sleepLayerEntityId, getImageSource('cootsStream/streamPopup.png'));
+  alignPopup(sleepLayerEntityId);
+  addCloseButton(sleepLayerId);
+
+  const handleStreamClicked = () => {
+    // show layer
+    addLayerAppend(sleepLayerId);
+    updateNumberStat('energy', -40);
+  };
+
+  const entity = createEntity(layerId);
+  addImage(
+    entity.id,
+    getImageSource('cootsStream/streamButton.png'),
+    () => {},
+    false,
+  );
+  addClickable(entity.id, handleStreamClicked);
+  const transform = getComponent(entity.id, componentTypes.TRANSFORM);
+  updateComponent({
+    id: transform.id,
+    size: vec2(160, 50),
+    position: vec2(390, 151),
+  });
 };
